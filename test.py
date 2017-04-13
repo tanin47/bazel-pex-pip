@@ -1,5 +1,5 @@
-import oauth2client
+import appdirs
 
-print oauth2client.__path__
+print appdirs.__file__
 
 print 'Hello'

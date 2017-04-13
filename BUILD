@@ -5,6 +5,6 @@ par_binary(
     name='main',
     srcs=glob(['*.py']),
     main='test.py',
-		deps=['//external:pip_tools']
+    deps=['//external:pip_tools']
 )
 

@@ -2,13 +2,13 @@ _BUILD_FILE = """
 py_library(
     name = 'pip_tools',
     srcs = glob(
-        include = ['bin/**/*', 'site-packages/**/*'],
-        exclude = [
-            # Illegal as Bazel labels but are not required by pip.
-            "site-packages/setuptools/command/launcher manifest.xml",
-            "site-packages/setuptools/*.tmpl",
-        ]
+        include = ['bin/**/*.py', 'site-packages/**/*.py'],
     ),
+    data = glob(
+        include = ['bin/**/*', 'site-packages/**/*'],
+        exclude = ['**/*.py', '**/*.pyc']
+    ),
+    imports=['site-packages'],
     visibility = ['//visibility:public']
 )
 """
@@ -24,8 +24,8 @@ def _pip_tools_impl(ctx):
     command += ['--install-option', '--install-scripts=%s' % ctx.path('bin')]
     command += ['--no-cache-dir']
 
+    print(command)
     result = ctx.execute(command)
-    print(result.return_code)
     print(result.stdout)
     print(result.stderr)
     ctx.file('BUILD', _BUILD_FILE, False)

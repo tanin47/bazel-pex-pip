@@ -7,5 +7,5 @@ git_repository(
 
 load('//:pypi.bzl', 'pypi_repositories')
 
-pypi_repositories(['oauth2client'])
+pypi_repositories(['appdirs'])
 
