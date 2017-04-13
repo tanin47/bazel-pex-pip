@@ -24,10 +24,10 @@ def _pip_tools_impl(ctx):
     command += ['--install-option', '--install-scripts=%s' % ctx.path('bin')]
     command += ['--no-cache-dir']
 
-    print(command)
     result = ctx.execute(command)
-    print(result.stdout)
-    print(result.stderr)
+    if result.return_code != 0:
+      fail('Failed to execute %s.\n%s\n%s' % (
+          ' '.join(command), result.stdout, result.stderr))
     ctx.file('BUILD', _BUILD_FILE, False)
 
 
