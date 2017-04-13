@@ -4,7 +4,7 @@ load('//:requirements.bzl', 'requirements')
 
 pex_binary(
     name='main',
-    main='test.py',
+    main='main.py',
     deps=[':bare'],
     # pex_binary doesn't read deps from :bare properly. This is why we refactor
     # requirements.
@@ -29,3 +29,8 @@ py_library(
     deps=['//external:pip_tools']
 )
 
+py_test(
+    name='test',
+    srcs=['test.py'],
+    deps=[':src']
+)

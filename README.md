@@ -38,10 +38,10 @@ Design Decision
 ### Why do we choose pex over [subpar](https://github.com/google/subpar)?
 
 Subpar doesn't support extracting resource files from the archive. If we have a
-more complex resource file (e.g. a bash script), we can't execute it.
+more complex use case (e.g. executing a bash script), we can't use subpar.
 
-Pex, on another hand, can set `zip_safe=False` and extracts the archive before
-execute the python code.
+Pex, on another hand, can set `zip_safe=False` which extracts the archive before
+executing the python code.
 
 
 Special Thanks
