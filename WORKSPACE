@@ -1,10 +1,4 @@
 git_repository(
-    name = "subpar",
-    remote = "https://github.com/google/subpar",
-    commit = "edb8409041b521959b6ed4b7412c0eec59d4af78",
-)
-
-git_repository(
     name = "io_bazel_rules_pex",
     remote = "https://github.com/tanin47/bazel_rules_pex.git",
     tag = "0.3.0",
