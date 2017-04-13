@@ -1,6 +1,6 @@
 _BUILD_FILE = """
 py_library(
-    name = 'pip_tools',
+    name = 'library',
     srcs = glob(
         include = ['bin/**/*.py', 'site-packages/**/*.py'],
     ),
@@ -14,16 +14,17 @@ py_library(
 """
 
 
-def _pip_tools_impl(ctx):
+def pip_package_impl(ctx):
     getpip = ctx.path(ctx.attr._getpip)
-    tools = ctx.path('site-packages')
+    path = ctx.path('site-packages')
 
     command = ['python', str(getpip)]
-    command += list(ctx.attr.packages)
-    command += ['--target', str(tools)]
+    command += ['%s==%s' % (ctx.attr.name, ctx.attr.version)]
+    command += ['--target', str(path)]
     command += ['--install-option', '--install-scripts=%s' % ctx.path('bin')]
     command += ['--no-cache-dir']
 
+    print(command)
     result = ctx.execute(command)
     if result.return_code != 0:
       fail('Failed to execute %s.\n%s\n%s' % (
@@ -31,12 +32,12 @@ def _pip_tools_impl(ctx):
     ctx.file('BUILD', _BUILD_FILE, False)
 
 
-_pip_tools = repository_rule(
-    _pip_tools_impl,
+pip_package = repository_rule(
+    pip_package_impl,
     attrs={
-        'packages': attr.string_list(),
+        'version': attr.string(),
         '_getpip': attr.label(
-            default=Label('@getpip//file:get-pip.py'),
+            default=Label('@pip//file:get-pip.py'),
             allow_single_file=True,
             executable=True,
             cfg='host'
@@ -45,20 +46,9 @@ _pip_tools = repository_rule(
 )
 
 
-def pypi_repositories(packages=None):
-    native.http_file(
-        name="getpip",
-        url="https://bootstrap.pypa.io/get-pip.py",
-        sha256="19dae841a150c86e2a09d475b5eb0602861f2a5b7761ec268049a662dbd2bd0c"
-    )
-
-    _pip_tools(
-        name="pypi",
-        visibility=['//visibility:public'],
-        packages=packages if packages else []
-    )
-
-    native.bind(
-        name="pip_tools",
-        actual="@pypi//:pip_tools",
-    )
+def pip():
+  native.http_file(
+      name="pip",
+      url="https://bootstrap.pypa.io/get-pip.py",
+      sha256="19dae841a150c86e2a09d475b5eb0602861f2a5b7761ec268049a662dbd2bd0c"
+  )
