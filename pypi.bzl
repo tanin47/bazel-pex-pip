@@ -1,6 +1,6 @@
 _BUILD_FILE = """
 py_library(
-    name = 'library',
+    name = 'libraries',
     srcs = glob(
         include = ['bin/**/*.py', 'site-packages/**/*.py'],
     ),
@@ -19,7 +19,7 @@ def pip_package_impl(ctx):
     path = ctx.path('site-packages')
 
     command = ['python', str(getpip)]
-    command += ['%s==%s' % (ctx.attr.name, ctx.attr.version)]
+    command += list(ctx.attr.packages)
     command += ['--target', str(path)]
     command += ['--install-option', '--install-scripts=%s' % ctx.path('bin')]
     command += ['--no-cache-dir']
@@ -32,10 +32,10 @@ def pip_package_impl(ctx):
     ctx.file('BUILD', _BUILD_FILE, False)
 
 
-pip_package = repository_rule(
+pip_requirements = repository_rule(
     pip_package_impl,
     attrs={
-        'version': attr.string(),
+        'packages': attr.string_list(),
         '_getpip': attr.label(
             default=Label('@pip//file:get-pip.py'),
             allow_single_file=True,

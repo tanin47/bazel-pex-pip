@@ -4,11 +4,14 @@ git_repository(
     tag = "0.3.0",
 )
 
-load('//:pypi.bzl', 'pip', 'pip_package')
+load('//:pypi.bzl', 'pip', 'pip_requirements')
+load("//:requirements.bzl", "requirements")
 load("@io_bazel_rules_pex//pex:pex_rules.bzl", "pex_repositories")
 
-pip()
-pip_package(name='oauth2client', version='4.0.0')
-pip_package(name='appdirs', version='1.4.3')
 pex_repositories()
 
+pip()
+pip_requirements(
+    name='requirements',
+    packages=requirements
+)
