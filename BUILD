@@ -15,19 +15,38 @@ pex_binary(
 
 py_library(
     name='src',
-    deps=[':bare', ':requirements'],
+    deps=[':bare', '@requirements//:libraries'],
 )
 
 
 py_library(
     name='bare',
-    srcs=glob(['*.py']),
+    srcs=glob(['main.py']),
     data=glob(['resources/*']),
 )
 
 
 py_test(
     name='test',
-    srcs=['test.py'],
-    deps=[':src']
+    srcs=['test.py'] + glob(['tests/**/*.py']),
+    deps=[':src'],
+    local=1
 )
+
+
+# The 2 rules below should be in tests/ and tests/fakeagain/, respectively.
+# But if we created BUILD in those dirs, there would be scoping issues, and
+# :test wouldn't work.
+py_test(
+    name='fake_test',
+    srcs=['tests/fake_test.py'],
+    deps=[':src'],
+)
+
+
+py_test(
+    name='fake2_test',
+    srcs=['tests/fakeagain/fake2_test.py'],
+    deps=[':src'],
+)
+

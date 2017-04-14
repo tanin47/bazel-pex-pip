@@ -1,16 +1,22 @@
 
+import os
+import sys
 import appdirs
 import unittest
 
-import main
 
-class MainTest(unittest.TestCase):
+def main():
+  suites = unittest.loader.TestLoader().discover(
+      '.',
+      pattern='*_test.py',
+      top_level_dir='.')
 
-  def test_main(self):
-    print appdirs.__file__
-    with self.assertRaises(AssertionError) as cm:
-      main.main()
+  result = unittest.TextTestRunner(
+      verbosity=1, buffer=False).run(suites)
+
+  if result.errors or result.failures:
+    sys.exit(1)
 
 
 if __name__ == '__main__':
-  unittest.main()
+  main()
